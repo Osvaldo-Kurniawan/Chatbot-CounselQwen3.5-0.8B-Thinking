@@ -1,0 +1,8 @@
+streamlit
+torch==2.6.0
+transformers>=4.51.0
+accelerate>=1.4.0
+sentencepiece
+safetensors
+protobuf
+einops
