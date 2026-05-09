@@ -8,6 +8,9 @@ from __future__ import annotations
 from transformers import AutoTokenizer
 
 # ── Set this to your custom HuggingFace model path or repo ID ─────────────────
+# Base model
+# MODEL_NAME = "tegarganang/CounselQwen3.5-9B-Thinking"
+# Downgrade model
 MODEL_NAME = "tegarganang/CounselQwen3.5-0.8B-Thinking"
 # ──────────────────────────────────────────────────────────────────────────────
 
