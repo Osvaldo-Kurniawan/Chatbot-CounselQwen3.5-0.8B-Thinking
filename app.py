@@ -6,7 +6,6 @@ Tokenization     →  tokenizer.py
 """
 
 import streamlit as st
-import model_llama as model
 from model import get_model, stream_response
 from tokenizer import MODEL_NAME, get_tokenizer
 
@@ -449,15 +448,6 @@ if user_input := st.chat_input("Share what's on your mind…"):
 
     history = st.session_state.messages[:-1]
     with st.chat_message("assistant"):
-        placeholder = st.empty()
-        full_response = ""
-        for chunk in model.stream_response(
-            user_input=prompt,
-            conversation_history=st.session_state.messages,
-            max_new_tokens=256,
-        ):
-            full_response += chunk
-            placeholder.markdown(full_response + "▌")
-        placeholder.markdown(full_response)
+        full_response = st.write_stream(stream_response(user_input, history))
 
     st.session_state.messages.append({"role": "assistant", "content": full_response})
