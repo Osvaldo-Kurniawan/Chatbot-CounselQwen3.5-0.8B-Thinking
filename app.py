@@ -1,6 +1,6 @@
 """
 streamlit_app.py
-Serene AI — calm, emotionally safe mental wellness chat interface.
+Signal Insight — contextual biosignal notification interface.
 Model inference  →  model.py
 Tokenization     →  tokenizer.py
 """
@@ -11,8 +11,8 @@ from tokenizer import MODEL_NAME, get_tokenizer
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Serene AI",
-    page_icon="🌿",
+    page_title="Signal Insight",
+    page_icon="📡",
     layout="centered",
 )
 
@@ -24,7 +24,6 @@ st.markdown(
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
-    /* ── CSS Variables ── */
     :root {
         --bg:           #FAF5F2;
         --bg-card:      #FFFFFF;
@@ -47,7 +46,6 @@ st.markdown(
         --radius-pill:  100px;
     }
 
-    /* ── Reset & Base ── */
     html, body, [class*="css"] {
         font-family: 'DM Sans', sans-serif !important;
         color: var(--text-main) !important;
@@ -61,8 +59,10 @@ st.markdown(
         min-height: 100vh;
     }
 
-    /* Hide Streamlit chrome */
-    #MainMenu, footer, header { visibility: hidden; }
+    #MainMenu, footer, header {
+        visibility: hidden;
+    }
+
     .block-container {
         padding-top: 0 !important;
         padding-bottom: 7rem !important;
@@ -71,7 +71,7 @@ st.markdown(
     }
 
     /* ── Header ── */
-    .serene-header {
+    .signal-header {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -81,28 +81,31 @@ st.markdown(
         margin-bottom: 0.25rem;
     }
 
-    /* Wrap brand + tag */
-    .serene-header .brand-wrapper {
+    .signal-header .brand-wrapper {
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
-    .serene-header .logo-circle { 
-        width: 38px; 
-        height: 38px; 
-        border-radius: 50%; 
-        background: linear-gradient(135deg, #C4956A 0%, #8B6355 55%, #4A5E57 100%); 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        font-size: 1rem; 
-        box-shadow: 0 3px 10px rgba(139,99,85,0.25); 
-        flex-shrink: 0; 
+    .signal-header .logo-circle {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(
+            135deg,
+            #C4956A 0%,
+            #8B6355 55%,
+            #4A5E57 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        box-shadow: 0 3px 10px rgba(139,99,85,0.25);
+        flex-shrink: 0;
     }
 
-    /* Brand */
-    .serene-header .brand {
+    .signal-header .brand {
         font-family: 'Lora', serif;
         font-size: 1.2rem;
         font-weight: 600;
@@ -110,8 +113,7 @@ st.markdown(
         letter-spacing: -0.01em;
     }
 
-    /* Model tag under it */
-    .serene-header .model-tag {
+    .signal-header .model-tag {
         font-size: 0.68rem;
         color: var(--text-soft);
         background: var(--beige);
@@ -122,11 +124,12 @@ st.markdown(
         margin-top: 4px;
     }
 
-    /* ── Welcome / empty state ── */
+    /* ── Welcome ── */
     .welcome-hero {
         text-align: center;
-        padding: 2.8rem 1rem 1.5rem;
+        padding: 4rem 1rem 2rem;
     }
+
     .welcome-hero h2 {
         font-family: 'Lora', serif;
         font-size: 2rem;
@@ -136,66 +139,20 @@ st.markdown(
         line-height: 1.25;
         margin: 0 0 0.7rem;
     }
+
     .welcome-hero p {
         font-size: 0.92rem;
         color: var(--text-muted);
         font-weight: 300;
         line-height: 1.75;
         margin: 0 auto 2rem;
-        max-width: 360px;
+        max-width: 520px;
     }
 
-    /* Session Cards */
-    .session-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-        margin-bottom: 2rem;
-    }
-    .session-card {
-        border-radius: var(--radius-lg);
-        padding: 1.1rem 1rem 1rem;
-        text-align: left;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        cursor: pointer;
-    }
-    .session-card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-md);
-    }
-    .session-card.sage  { background: var(--sage);    border: 1px solid rgba(150,180,150,0.2); }
-    .session-card.lav   { background: var(--lavender); border: 1px solid rgba(160,150,200,0.2); }
-    .session-card.beige { background: var(--beige);   border: 1px solid rgba(180,160,140,0.2); }
-
-    .session-card .sc-icon {
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
-        background: var(--icon-bg);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.95rem;
-        margin-bottom: 0.7rem;
-    }
-    .session-card .sc-title {
-        font-family: 'Lora', serif;
-        font-size: 0.88rem;
-        font-weight: 600;
-        color: var(--text-main);
-        margin-bottom: 0.25rem;
-    }
-    .session-card .sc-desc {
-        font-size: 0.76rem;
-        color: var(--text-muted);
-        line-height: 1.55;
-        font-weight: 300;
-    }
-
-    /* Hero landscape image strip */
+    /* ── Hero Image ── */
     .hero-image {
         width: 100%;
-        height: 160px;
+        height: 180px;
         border-radius: var(--radius-lg);
         background: linear-gradient(
             120deg,
@@ -213,46 +170,28 @@ st.markdown(
         align-items: center;
         justify-content: center;
     }
+
     .hero-image::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='160'%3E%3Ccircle cx='80' cy='100' r='60' fill='rgba(255,220,180,0.18)'/%3E%3Ccircle cx='200' cy='130' r='90' fill='rgba(255,200,150,0.12)'/%3E%3Ccircle cx='340' cy='80' r='70' fill='rgba(100,160,140,0.2)'/%3E%3C/svg%3E") center/cover;
+        background:
+            radial-gradient(circle at 20% 30%, rgba(255,255,255,0.12), transparent 30%),
+            radial-gradient(circle at 80% 70%, rgba(255,255,255,0.08), transparent 35%);
     }
+
     .hero-image .hero-text {
         position: relative;
         z-index: 1;
         font-family: 'Lora', serif;
         font-style: italic;
         font-size: 1.05rem;
-        color: rgba(255,255,255,0.9);
+        color: rgba(255,255,255,0.92);
         text-shadow: 0 2px 8px rgba(0,0,0,0.2);
         letter-spacing: 0.01em;
     }
 
-    /* ── Date separator ── */
-    .date-sep {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin: 1.2rem 0 0.8rem;
-        padding: 0 0.25rem;
-    }
-    .date-sep::before, .date-sep::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: var(--border);
-    }
-    .date-sep span {
-        font-size: 0.68rem;
-        letter-spacing: 0.12em;
-        color: var(--text-soft);
-        font-weight: 500;
-        text-transform: uppercase;
-    }
-
-    /* ── Chat messages ── */
+    /* ── Chat Messages ── */
     [data-testid="stChatMessage"] {
         background: transparent !important;
         padding: 0.2rem 0 !important;
@@ -262,7 +201,7 @@ st.markdown(
         justify-content: flex-start !important;
     }
 
-    /* User bubble — right-aligned lavender */
+    /* User Bubble */
     [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"])
     [data-testid="stMarkdownContainer"] {
         background: var(--bubble-user) !important;
@@ -276,7 +215,7 @@ st.markdown(
         box-shadow: var(--shadow-sm);
     }
 
-    /* Assistant bubble — left-aligned white */
+    /* Assistant Bubble */
     [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarAssistant"])
     [data-testid="stMarkdownContainer"] {
         background: var(--bubble-ai) !important;
@@ -290,52 +229,17 @@ st.markdown(
         box-shadow: var(--shadow-sm);
     }
 
-    /* Avatar overrides */
     [data-testid="stChatMessageAvatarUser"] {
         background: linear-gradient(135deg, #C4956A, #8B6355) !important;
         border-radius: 50% !important;
     }
+
     [data-testid="stChatMessageAvatarAssistant"] {
         background: var(--icon-bg) !important;
         border-radius: 50% !important;
     }
 
-    /* Code blocks */
-    [data-testid="stChatMessage"] code,
-    [data-testid="stChatMessage"] pre {
-        font-family: 'DM Mono', 'Fira Code', monospace !important;
-        font-size: 0.82rem !important;
-        background: rgba(139,99,85,0.06) !important;
-        border-radius: 6px;
-        padding: 2px 6px;
-    }
-
-    /* ── Suggestion chips ── */
-    .chips-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 0.6rem;
-        margin-left: 3rem;
-    }
-    .chip {
-        display: inline-block;
-        padding: 5px 14px;
-        border-radius: var(--radius-pill);
-        border: 1px solid var(--border);
-        background: var(--bg-card);
-        color: var(--accent);
-        font-size: 0.76rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.15s, box-shadow 0.15s;
-    }
-    .chip:hover {
-        background: var(--beige);
-        box-shadow: var(--shadow-sm);
-    }
-
-    /* ── Input bar ── */
+    /* ── Input ── */
     [data-testid="stChatInput"] {
         position: fixed !important;
         bottom: 2rem;
@@ -349,24 +253,42 @@ st.markdown(
         box-shadow: none !important;
         z-index: 999;
     }
-    [data-testid="stChatInput"]:focus-within > div {
-        border-color: rgba(139,99,85,0.3);
-    }
+
     [data-testid="stChatInput"] textarea {
         background: transparent !important;
         border: none !important;
     }
-    [data-testid="stChatInput"] textarea::placeholder { color: var(--text-soft) !important; }
-    [data-testid="stChatInputSubmitButton"] svg { stroke: var(--accent) !important; }
+
+    [data-testid="stChatInput"] textarea::placeholder {
+        color: var(--text-soft) !important;
+    }
+
+    [data-testid="stChatInputSubmitButton"] svg {
+        stroke: var(--accent) !important;
+    }
 
     /* ── Scrollbar ── */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(139,99,85,0.15); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(139,99,85,0.28); }
+    ::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(139,99,85,0.15);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(139,99,85,0.28);
+    }
 
     /* ── Spinner ── */
-    .stSpinner > div { border-top-color: var(--accent) !important; }
+    .stSpinner > div {
+        border-top-color: var(--accent) !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -376,12 +298,12 @@ st.markdown(
 st.markdown(
     f"""
     <div style="position:relative;">
-        <div class="serene-header">
-                <div class="brand-wrapper">
-                    <div class="logo-circle">🌿</div>
-                    <span class="brand">Serene AI</span>
-                    <span class="model-tag">{MODEL_NAME}</span>
-                </div>
+        <div class="signal-header">
+            <div class="brand-wrapper">
+                <div class="logo-circle">📡</div>
+                <span class="brand">Signal Insight</span>
+                <span class="model-tag">{MODEL_NAME}</span>
+            </div>
         </div>
     </div>
     """,
@@ -389,65 +311,65 @@ st.markdown(
 )
 
 # ── Load model & tokenizer once ───────────────────────────────────────────────
-@st.cache_resource(show_spinner="Warming up…")
+@st.cache_resource(show_spinner="Initializing model...")
 def load_resources():
     get_tokenizer()
     get_model()
 
 load_resources()
 
-# ── Session state ─────────────────────────────────────────────────────────────
+# ── Session State ─────────────────────────────────────────────────────────────
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# ── Empty / Welcome state ─────────────────────────────────────────────────────
+# ── Welcome State ─────────────────────────────────────────────────────────────
 if not st.session_state.messages:
     st.markdown(
         """
         <div class="welcome-hero">
-            <h2>How are you feeling today?</h2>
-            <p>This is your calm, judgement-free space. Share what's on your mind — I'm here to listen and support you.</p>
-        </div>
-
-        <div class="session-grid">
-            <div class="session-card sage">
-                <div class="sc-icon">🧘</div>
-                <div class="sc-title">Mindfulness Exercise</div>
-                <div class="sc-desc">Gentle breathing and grounding practices for this moment.</div>
-            </div>
-            <div class="session-card lav">
-                <div class="sc-icon">📓</div>
-                <div class="sc-title">Journal Prompt</div>
-                <div class="sc-desc">Reflective questions to help you explore your thoughts.</div>
-            </div>
-            <div class="session-card beige">
-                <div class="sc-icon">🌊</div>
-                <div class="sc-title">Stress Relief</div>
-                <div class="sc-desc">Simple techniques to ease tension and find calm.</div>
-            </div>
+            <h2>Bio Signal Notification Engine</h2>
+            <p>
+                Analyze physiological signals and generate contextual notifications
+                based on detected behavioral or biometric patterns.
+            </p>
         </div>
 
         <div class="hero-image">
-            <span class="hero-text">"Every breath is a new beginning."</span>
+            <span class="hero-text">
+                "Detect patterns. Trigger meaningful interventions."
+            </span>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-# ── Render chat history ───────────────────────────────────────────────────────
+# ── Render Chat History ───────────────────────────────────────────────────────
 else:
-    for i, msg in enumerate(st.session_state.messages):
+    for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-# ── Input & response ──────────────────────────────────────────────────────────
-if user_input := st.chat_input("Share what's on your mind…"):
+# ── Chat Input ────────────────────────────────────────────────────────────────
+if user_input := st.chat_input("Input biosignal event or notification context..."):
+
+    # Render user message
     with st.chat_message("user"):
         st.markdown(user_input)
-    st.session_state.messages.append({"role": "user", "content": user_input})
 
+    st.session_state.messages.append({
+        "role": "user",
+        "content": user_input
+    })
+
+    # Generate assistant response
     history = st.session_state.messages[:-1]
-    with st.chat_message("assistant"):
-        full_response = st.write_stream(stream_response(user_input, history))
 
-    st.session_state.messages.append({"role": "assistant", "content": full_response})
+    with st.chat_message("assistant"):
+        full_response = st.write_stream(
+            stream_response(user_input, history)
+        )
+
+    st.session_state.messages.append({
+        "role": "assistant",
+        "content": full_response
+    })
