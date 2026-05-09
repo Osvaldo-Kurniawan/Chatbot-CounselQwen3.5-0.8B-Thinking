@@ -336,7 +336,8 @@ if not st.session_state.messages:
 
         <div class="hero-image">
             <span class="hero-text">
-                "Detect patterns. Trigger meaningful interventions."
+                "Notice:
+The deployed version of this app uses a smaller model than the original demo due to Streamlit Cloud resource limitations. The full model and architecture are still supported in the codebase and can be run locally or on a server with sufficient GPU resources."
             </span>
         </div>
         """,
